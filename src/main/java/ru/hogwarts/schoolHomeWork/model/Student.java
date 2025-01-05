@@ -1,9 +1,15 @@
 package ru.hogwarts.schoolHomeWork.model;
 
-import java.util.Objects;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
 
+import java.util.Objects;
+@Entity
     public class Student {
 
+    @Id
+    @GeneratedValue
         private long id;
         private String name;
         private int age;
@@ -16,6 +22,7 @@ import java.util.Objects;
             this.name = name;
             this.age = age;
         }
+
 
         @Override
         public boolean equals(Object o) {

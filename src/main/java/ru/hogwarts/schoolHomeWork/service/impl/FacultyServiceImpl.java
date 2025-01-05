@@ -2,55 +2,54 @@ package ru.hogwarts.schoolHomeWork.service.impl;
 
 import org.springframework.stereotype.Service;
 import ru.hogwarts.schoolHomeWork.model.Faculty;
+import ru.hogwarts.schoolHomeWork.repository.FacultyRepository;
 import ru.hogwarts.schoolHomeWork.service.FacultyService;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class FacultyServiceImpl implements FacultyService {
 
-    private static Long counter = 0L;
+    private final FacultyRepository facultyRepository;
 
-    private final Map<Long, Faculty> facultys = new HashMap<>();
+    public FacultyServiceImpl(FacultyRepository facultyRepository) {
+        this.facultyRepository = facultyRepository;
+    }
 
     @Override
     public Faculty create(Faculty faculty) {
 
-        Long currentId = ++counter;
-        faculty.setId(currentId);
-        facultys.put(currentId, faculty);
-
-        return faculty;
+        return facultyRepository.save(faculty);
     }
 
     @Override
     public Faculty read(Long facultyId) {
 
-        return facultys.get(facultyId);
+        return facultyRepository.findById(facultyId).orElse(null);
     }
 
     @Override
     public Faculty update(Long facultyId, Faculty faculty) {
 
-        Faculty facultyFromDb = facultys.get(facultyId);
+        Faculty facultyFromDb = facultyRepository.findById(facultyId)
+                .orElseThrow(IllegalArgumentException::new);
         facultyFromDb.setName(faculty.getName());
         facultyFromDb.setColor(faculty.getColor());
 
-        return facultyFromDb;
+        return facultyRepository.save(facultyFromDb);
     }
 
     @Override
     public void delete(Long facultyId) {
 
-        facultys.remove(facultyId);
+        facultyRepository.deleteById(facultyId);
+
 
     }
 
     @Override
     public List<Faculty> getAllByColor(String color) {
-        return facultys.values()
+        return facultyRepository.findAll()
                 .stream()
                 .filter(it -> it.getColor().equals(color))
                 .toList();

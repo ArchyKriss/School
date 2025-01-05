@@ -2,56 +2,55 @@ package ru.hogwarts.schoolHomeWork.service.impl;
 
 import org.springframework.stereotype.Service;
 import ru.hogwarts.schoolHomeWork.model.Student;
+import ru.hogwarts.schoolHomeWork.repository.Studentrepository;
 import ru.hogwarts.schoolHomeWork.service.StudentService;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
 public class StudentServiceImpl implements StudentService {
 
-    private static Long counter = 0L;
+    private final Studentrepository studentrepository;
 
-    private final Map<Long, Student> students = new HashMap<>();
+    public StudentServiceImpl(Studentrepository studentrepository){
+        this.studentrepository = studentrepository;
+    }
 
     @Override
     public Student create(Student student) {
 
-        Long currentId = ++counter;
-        student.setId(currentId);
-        students.put(currentId, student);
-
-        return student;
+        return studentrepository.save(student);
     }
 
     @Override
     public Student read(Long studentId) {
 
-        return students.get(studentId);
+        return studentrepository.findById(studentId).orElse(null);
     }
 
     @Override
     public Student update(Long studentId, Student student) {
 
-        Student studentFromDb = students.get(studentId);
+       Student studentFromDb = studentrepository.findById(studentId)
+               .orElseThrow(IllegalArgumentException::new);
+
         studentFromDb.setName(student.getName());
         studentFromDb.setAge(student.getAge());
 
-        return studentFromDb;
+        return studentrepository.save(studentFromDb);
     }
 
     @Override
     public void delete(Long studentId) {
 
-        students.remove(studentId);
+        studentrepository.deleteById(studentId);
 
     }
 
     @Override
     public List<Student> getAllByAge(int age) {
-        return students.values()
+        return studentrepository.findAll()
                 .stream()
                 .filter(it -> it.getAge()==age)
                 .toList();
