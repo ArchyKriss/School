@@ -40,5 +40,9 @@ public class StudentController {
     public List<Student> getAllByAge(@RequestParam int age){
         return studentService.getAllByAge(age);
     }
+    @GetMapping
+    public List<Student> findByAgeBetween(int from, int to){
+        return studentService.findByAgeBetween(from, to);
+    }
 
 }

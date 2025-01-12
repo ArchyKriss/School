@@ -1,8 +1,6 @@
 package ru.hogwarts.schoolHomeWork.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 import java.util.Objects;
 @Entity
@@ -14,6 +12,10 @@ import java.util.Objects;
         private String name;
         private int age;
 
+    @ManyToOne
+    @JoinColumn(name = "faculty_id")
+    private Faculty faculty;
+
         public Student() {
         }
 
@@ -23,8 +25,15 @@ import java.util.Objects;
             this.age = age;
         }
 
+    public Faculty getFaculty() {
+        return faculty;
+    }
 
-        @Override
+    public void setFaculty(Faculty faculty) {
+        this.faculty = faculty;
+    }
+
+    @Override
         public boolean equals(Object o) {
             if (this == o)
                 return true;
